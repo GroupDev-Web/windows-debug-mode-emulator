@@ -3,109 +3,87 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Windows 10 Debug Mode Simulator</title>
+    <title>Windows Debug Emulator</title>
     <style>
         body {
-            font-family: 'Courier New', Courier, monospace;
+            margin: 0;
+            padding: 0;
             background-color: black;
-            color: green;
-            padding: 20px;
+            color: white;
+            font-family: Consolas, monaco, monospace;
         }
-        #output {
-            white-space: pre;
-            margin-top: 20px;
-            border: 1px solid green;
-            padding: 10px;
-            height: 200px;
-            overflow-y: auto;
-        }
-        input {
-            background-color: black;
-            color: green;
-            border: none;
-            outline: none;
-            width: 100%;
-        }
-        button {
-            margin-top: 10px;
-            background-color: green;
-            color: black;
-            border: none;
-            padding: 5px 10px;
-        }
-        .hidden {
+
+        .loading-screen, .cmd-screen, .debug-options {
             display: none;
         }
-        #debugOptions {
-            margin-top: 20px;
+
+        .loading-screen img {
+            width: 200px;
+            margin: 20% auto;
+            display: block;
+        }
+
+        .cmd-screen {
+            padding: 20px;
+        }
+
+        .debug-options {
+            padding: 20px;
         }
     </style>
 </head>
 <body>
+    <div class="loading-screen">
+        <img src="windows-loading.jpg" alt="Windows Loading">
+        <p style="text-align: center;">Starting Windows...</p>
+    </div>
 
-<h1>Windows 10 Debug Mode Simulator</h1>
-<div id="output"></div>
-<input type="text" id="command" placeholder="Type your command here...">
-<button id="submit">Execute</button>
+    <div class="cmd-screen">
+        <p>C:\></p>
+        <input type="text" id="cmdInput" autofocus />
+    </div>
 
-<div id="debugOptions" class="hidden">
-    <button id="checkErrors">Check for Errors</button>
-    <button id="fixErrors">Fix Errors</button>
-    <button id="restartPC">Restart PC</button>
-    <button id="goBack">Go Back to Command Prompt</button>
-</div>
+    <div class="debug-options">
+        <p>Select an option:</p>
+        <ul>
+            <li><a href="#" onclick="openBIOS()">BIOS Settings</a></li>
+            <li><a href="#" onclick="troubleshoot()">Troubleshoot</a></li>
+            <li><a href="#" onclick="backToCmd()">Back to Command Prompt</a></li>
+        </ul>
+    </div>
 
-<script>
-    const output = document.getElementById('output');
-    const commandInput = document.getElementById('command');
-    const submitButton = document.getElementById('submit');
-    const debugOptions = document.getElementById('debugOptions');
+    <script>
+        // Show loading screen for 10 seconds
+        document.querySelector('.loading-screen').style.display = 'block';
+        setTimeout(() => {
+            document.querySelector('.loading-screen').style.display = 'none';
+            document.querySelector('.cmd-screen').style.display = 'block';
+        }, 10000); // 10 seconds
 
-    let errorsFound = true; // Initially, we assume errors are found
+        // Capture command prompt input
+        document.getElementById('cmdInput').addEventListener('keypress', function(event) {
+            if (event.key === 'Enter') {
+                let cmd = this.value.toUpperCase();
+                if (cmd === 'DEBUGMODE') {
+                    document.querySelector('.cmd-screen').style.display = 'none';
+                    document.querySelector('.debug-options').style.display = 'block';
+                }
+            }
+        });
 
-    submitButton.addEventListener('click', () => {
-        const command = commandInput.value.trim();
-        commandInput.value = '';
-
-        if (command.toLowerCase() === 'debugmode') {
-            output.textContent += 'Debug mode enabled.\n';
-            debugOptions.classList.remove('hidden');
-        } else {
-            output.textContent += `Unknown command: ${command}\n`;
+        // Functions for menu options
+        function openBIOS() {
+            alert('Entering BIOS settings...');
         }
 
-        output.scrollTop = output.scrollHeight; // Auto-scroll to the bottom
-    });
-
-    document.getElementById('checkErrors').addEventListener('click', () => {
-        if (errorsFound) {
-            output.textContent += 'Checking for errors...\nErrors found: Some errors detected.\n';
-        } else {
-            output.textContent += 'Checking for errors...\nErrors found: None.\n';
+        function troubleshoot() {
+            alert('Opening Troubleshoot options...');
         }
-    });
 
-    document.getElementById('fixErrors').addEventListener('click', () => {
-        output.textContent += 'Fixing errors...\nAll errors fixed.\n';
-        errorsFound = false; // Set errors found to false after fixing
-    });
-
-    document.getElementById('restartPC').addEventListener('click', () => {
-        output.textContent += 'Restarting PC...\nPC restarted.\n';
-        debugOptions.classList.add('hidden'); // Hide debug options
-    });
-
-    document.getElementById('goBack').addEventListener('click', () => {
-        output.textContent += 'Exiting debug mode.\n';
-        debugOptions.classList.add('hidden'); // Hide debug options
-    });
-
-    commandInput.addEventListener('keydown', (event) => {
-        if (event.key === 'Enter') {
-            submitButton.click();
+        function backToCmd() {
+            document.querySelector('.debug-options').style.display = 'none';
+            document.querySelector('.cmd-screen').style.display = 'block';
         }
-    });
-</script>
-
+    </script>
 </body>
 </html>
