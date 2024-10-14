@@ -13,36 +13,35 @@
             font-family: Consolas, monaco, monospace;
         }
 
-        .loading-screen, .cmd-screen, .debug-options {
+        .loading-screen, .cmd-screen, .debug-options, .virus-result, .fixing-virus-screen {
             display: none;
         }
 
-        .loading-screen img {
+        .loading-screen img, .fixing-virus-screen img {
             width: 200px;
             margin: 20% auto;
             display: block;
         }
 
-        .cmd-screen {
-            padding: 20px;
-        }
-
-        .debug-options {
+        .cmd-screen, .debug-options, .virus-result {
             padding: 20px;
         }
     </style>
 </head>
 <body>
+    <!-- Loading Screen -->
     <div class="loading-screen">
         <img src="windows-loading.jpg" alt="Windows Loading">
-        <p style="text-align: center;">Starting Windows...</p>
+        <p style="text-align: center;" id="loading-text">Starting Windows...</p>
     </div>
 
+    <!-- Command Prompt -->
     <div class="cmd-screen">
         <p>C:\></p>
         <input type="text" id="cmdInput" autofocus />
     </div>
 
+    <!-- Debug Options Menu -->
     <div class="debug-options">
         <p>Select an option:</p>
         <ul>
@@ -52,15 +51,28 @@
         </ul>
     </div>
 
+    <!-- Virus Check Result -->
+    <div class="virus-result">
+        <p id="virus-status"></p>
+        <button onclick="fixViruses()">Fix Viruses</button>
+        <button onclick="backToCmd()">Back to Command Prompt</button>
+    </div>
+
+    <!-- Fixing Virus Screen -->
+    <div class="fixing-virus-screen">
+        <img src="windows-loading.jpg" alt="Fixing Viruses">
+        <p style="text-align: center;" id="fixing-text">Starting Windows...</p>
+    </div>
+
     <script>
-        // Show loading screen for 10 seconds
+        // Initial loading screen (10 seconds)
         document.querySelector('.loading-screen').style.display = 'block';
         setTimeout(() => {
             document.querySelector('.loading-screen').style.display = 'none';
             document.querySelector('.cmd-screen').style.display = 'block';
         }, 10000); // 10 seconds
 
-        // Capture command prompt input
+        // Command prompt input handler
         document.getElementById('cmdInput').addEventListener('keypress', function(event) {
             if (event.key === 'Enter') {
                 let cmd = this.value.toUpperCase();
@@ -71,17 +83,43 @@
             }
         });
 
-        // Functions for menu options
+        // BIOS Settings option
         function openBIOS() {
-            alert('Entering BIOS settings...');
+            alert('CPU: Intel Core i5-11600K');
         }
 
+        // Troubleshoot option
         function troubleshoot() {
-            alert('Opening Troubleshoot options...');
+            document.querySelector('.debug-options').style.display = 'none';
+            document.querySelector('.virus-result').style.display = 'block';
+
+            // Random 50/50 virus detection
+            let virusFound = Math.random() < 0.5;
+            let virusStatus = virusFound ? 'Virus Found!' : 'No Viruses Detected.';
+            document.getElementById('virus-status').innerText = virusStatus;
         }
 
+        // Fix Viruses option
+        function fixViruses() {
+            document.querySelector('.virus-result').style.display = 'none';
+            document.querySelector('.fixing-virus-screen').style.display = 'block';
+
+            // Show the normal loading screen for 10 seconds
+            setTimeout(() => {
+                document.getElementById('fixing-text').innerText = 'Fixing Viruses...';
+
+                // Continue fixing for another 10 seconds
+                setTimeout(() => {
+                    document.querySelector('.fixing-virus-screen').style.display = 'none';
+                    document.querySelector('.cmd-screen').style.display = 'block';
+                }, 10000); // Next 10 seconds for fixing
+            }, 10000); // First 10 seconds normal loading
+        }
+
+        // Go back to command prompt
         function backToCmd() {
             document.querySelector('.debug-options').style.display = 'none';
+            document.querySelector('.virus-result').style.display = 'none';
             document.querySelector('.cmd-screen').style.display = 'block';
         }
     </script>
