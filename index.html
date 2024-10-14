@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Windows 10 Debug Mode Simulator</title>
+    <style>
+        body {
+            font-family: 'Courier New', Courier, monospace;
+            background-color: black;
+            color: green;
+            padding: 20px;
+        }
+        #output {
+            white-space: pre;
+            margin-top: 20px;
+            border: 1px solid green;
+            padding: 10px;
+            height: 200px;
+            overflow-y: auto;
+        }
+        input {
+            background-color: black;
+            color: green;
+            border: none;
+            outline: none;
+            width: 100%;
+        }
+        button {
+            margin-top: 10px;
+            background-color: green;
+            color: black;
+            border: none;
+            padding: 5px 10px;
+        }
+        .hidden {
+            display: none;
+        }
+        #debugOptions {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+<h1>Windows 10 Debug Mode Simulator</h1>
+<div id="output"></div>
+<input type="text" id="command" placeholder="Type your command here...">
+<button id="submit">Execute</button>
+
+<div id="debugOptions" class="hidden">
+    <button id="checkErrors">Check for Errors</button>
+    <button id="fixErrors">Fix Errors</button>
+    <button id="restartPC">Restart PC</button>
+    <button id="goBack">Go Back to Command Prompt</button>
+</div>
+
+<script>
+    const output = document.getElementById('output');
+    const commandInput = document.getElementById('command');
+    const submitButton = document.getElementById('submit');
+    const debugOptions = document.getElementById('debugOptions');
+
+    let errorsFound = true; // Initially, we assume errors are found
+
+    submitButton.addEventListener('click', () => {
+        const command = commandInput.value.trim();
+        commandInput.value = '';
+
+        if (command.toLowerCase() === 'debugmode') {
+            output.textContent += 'Debug mode enabled.\n';
+            debugOptions.classList.remove('hidden');
+        } else {
+            output.textContent += `Unknown command: ${command}\n`;
+        }
+
+        output.scrollTop = output.scrollHeight; // Auto-scroll to the bottom
+    });
+
+    document.getElementById('checkErrors').addEventListener('click', () => {
+        if (errorsFound) {
+            output.textContent += 'Checking for errors...\nErrors found: Some errors detected.\n';
+        } else {
+            output.textContent += 'Checking for errors...\nErrors found: None.\n';
+        }
+    });
+
+    document.getElementById('fixErrors').addEventListener('click', () => {
+        output.textContent += 'Fixing errors...\nAll errors fixed.\n';
+        errorsFound = false; // Set errors found to false after fixing
+    });
+
+    document.getElementById('restartPC').addEventListener('click', () => {
+        output.textContent += 'Restarting PC...\nPC restarted.\n';
+        debugOptions.classList.add('hidden'); // Hide debug options
+    });
+
+    document.getElementById('goBack').addEventListener('click', () => {
+        output.textContent += 'Exiting debug mode.\n';
+        debugOptions.classList.add('hidden'); // Hide debug options
+    });
+
+    commandInput.addEventListener('keydown', (event) => {
+        if (event.key === 'Enter') {
+            submitButton.click();
+        }
+    });
+</script>
+
+</body>
+</html>
